@@ -1,0 +1,17 @@
+spring:
+    application:
+        name: demo
+    datasource:
+        username: postgres
+        password: 123
+        url: jdbc:postgresql://localhost:5432/nerdery_java
+        hikari:
+            maximum-pool-size: 20
+    jpa:
+        hibernate:
+          ddl-auto: update
+    flyway:
+        enabled: true
+        locations: classpath:db/flyway
+        schemas: public
+        baseline-on-migrate: true
