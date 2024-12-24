@@ -1,0 +1,59 @@
+# Homework
+
+### Build your tiny API store.
+You can choose the target of your business, be creative!.
+**Examples:** snack store, pet store, drug store.
+
+## Technical Requirements
+* PostgreSql
+	** Hibernate
+* Spring Boot
+* Prettier
+* Eslint
+
+## Mandatory Features
+1. Authentication endpoints (sign up, sign in, sign out, forgot, reset password) (REST)
+2. List products with pagination (REST)
+3. Search products by category (REST)
+4. Add 2 kinds of users (Manager, Client)
+5. As a Manager I can: (REST,GRAPH)
+    * Create products
+    * Update products
+    * Delete products
+    * Disable products
+    * Show clients orders with pagination - GraphQL
+    * Upload images per product.
+6. As a Client I can: (REST,GRAPH)
+    * See products
+    * See the product details
+    * Buy products - GraphQL
+    * Add products to cart - GraphQL
+    * Like products
+    * Show my order with pagination - GraphQL
+7. The product information(included the images) should be visible for logged and not logged users
+
+## Mandatory Implementations
+Schema validation for environment variables
+Usage of global exception filter
+Usage of bean validations and bean annotations.
+Usage of custom annotations
+Configure Http exploit Prevention, cors, rate limit (this last one for reset password feature)
+
+## Extra points
+* Implement resolve field in graphQL queries (if apply)
+* When the stock of a product reaches 3, notify the last user that liked it and not purchased the product yet with an email.
+  Use a background job and make sure to include the product's image in the email.
+* Send an email when the user changes the password
+* Deploy on Heroku
+
+## Notes:
+
+Requirements to use Rest:
+* Authentication endpoints (sign up, sign in, sign out, forgot, reset password)
+* Product Management endpoints (CRUD)
+* Stripe Integration for payment (including webhooks management)
+
+Requirements to use Graph:
+* Order and Cart Management
+		Requirements - Item 6 subsection 3,4,6
+									 Item 5 subsection 5

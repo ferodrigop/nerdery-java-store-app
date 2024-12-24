@@ -1,0 +1,93 @@
+type Query {
+    product(id: ID!): Product
+    products(categoryId: ID, isEnabled: Boolean, name: String): [Product!]!
+}
+
+type Role {
+    id: ID!
+    name: String!
+}
+
+type User {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    roles: [Role!]!
+    isEmailVerified: Boolean!
+    isDeleted: Boolean!
+}
+
+type Product {
+    id: ID!
+    name: String!
+    description: String!
+    price: Float!
+    stock: Int!
+    isEnabled: Boolean!
+    category: Category!
+    images: [ProductImage!]
+    likes: [ProductLike!]
+}
+
+type Category {
+    id: ID!
+    name: String!
+}
+
+type ProductImage {
+    id: ID!
+    imageUrl: String!
+    isMain: Boolean!
+    product: Product!
+}
+
+type ProductLike {
+    id: ID!
+    user: User!
+    product: Product!
+}
+
+type Order {
+    id: ID!
+    total: Float!
+    user: User!
+    status: String!
+    items: [OrderItem!]!
+}
+
+type OrderItem {
+    id: ID!
+    quantity: Int!
+    unitPrice: Float!
+    order: Order!
+    product: Product!
+}
+
+type Cart {
+    id: ID!
+    user: User!
+    items: [CartItem!]
+}
+
+type CartItem {
+    id: ID!
+    quantity: Int!
+    cart: Cart!
+    product: Product!
+}
+
+type Payment {
+    id: ID!
+    amount: Float!
+    currency: String!
+    status: String!
+    stripePaymentIntentId: String
+    order: Order!
+}
+
+type Notification {
+    id: ID!
+    message: String!
+    recipient: User!
+}
