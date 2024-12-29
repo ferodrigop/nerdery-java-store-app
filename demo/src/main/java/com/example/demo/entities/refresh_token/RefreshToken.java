@@ -3,7 +3,9 @@ package com.example.demo.entities.refresh_token;
 import com.example.demo.entities.user.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -19,10 +21,14 @@ public class RefreshToken {
     @Column(updatable = false, unique = true)
     private UUID id;
 
-    @Column(name = "token", unique = true, nullable = false)
-    private String token;
-
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
+
+    @Column(nullable = false, updatable = false)
+    private Instant expiresAt;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
 }

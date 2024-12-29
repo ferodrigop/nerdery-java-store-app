@@ -5,8 +5,7 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record SignInResponseDto(
-        String accessToken,
-        UUID refreshToken
+public record SignUpResponseDto(
+        UUID userId
 ) {
 }

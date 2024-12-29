@@ -2,6 +2,9 @@ package com.example.demo.configurations;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -41,5 +44,17 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
         return source;
+    }
+
+    @Bean
+    public DefaultMethodSecurityExpressionHandler expressionHandler() {
+        DefaultMethodSecurityExpressionHandler handler = new DefaultMethodSecurityExpressionHandler();
+        handler.setRoleHierarchy(roleHierarchy());
+        return handler;
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.fromHierarchy("ROLE_MANAGER > ROLE_USER");
     }
 }

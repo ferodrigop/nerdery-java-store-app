@@ -1,17 +1,23 @@
 spring:
-    application:
-        name: demo
-    datasource:
-        username: postgres
-        password: 123
-        url: jdbc:postgresql://localhost:5432/nerdery_java
-        hikari:
-            maximum-pool-size: 20
-    jpa:
-        hibernate:
-          ddl-auto: update
-    flyway:
-        enabled: true
-        locations: classpath:db/flyway
-        schemas: public
-        baseline-on-migrate: true
+  application:
+    name: demo
+  datasource:
+    username: postgres
+    password: 123
+    url: jdbc:postgresql://localhost:5432/nerdery_java
+    hikari:
+      maximum-pool-size: 20
+  jpa:
+    hibernate:
+      ddl-auto: update
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    schemas: public
+    baseline-on-migrate: true
+
+security:
+  jwt:
+    secret-key: 1044be16ae2969165c02b9573c994a50f0221995da74a708ef31a7a24b098ba2
+    access-token-expiration-time: 3600000 # 1h in millisecond
+    refresh-token-expiration-time: 604800000 # 1h in millisecond

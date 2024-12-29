@@ -6,10 +6,13 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,7 +22,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, unique = true)
@@ -32,23 +35,21 @@ public class User {
     private String lastName;
 
     @Email(flags = Pattern.Flag.CASE_INSENSITIVE)
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
+    private Role role;
 
     @Column(name = "is_email_verified", nullable = false)
-    private Boolean isEmailVerified = Boolean.FALSE;
+    private boolean isEmailVerified;
 
     @Column(name = "is_deleted", nullable = false)
-    private Boolean isDeleted = Boolean.FALSE;
+    private boolean isDeleted;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
@@ -57,4 +58,34 @@ public class User {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.getRoleName().name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.getEmail();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
