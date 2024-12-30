@@ -1,4 +1,4 @@
-package com.example.demo.controllers;
+package com.example.demo.controllers.auth;
 
 import com.example.demo.dtos.auth.*;
 import com.example.demo.dtos.general.ResponseMessageDto;
@@ -18,6 +18,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/authentication")
 public class AuthenticationController {
+    // todo: add email confirmation requirement to activate account
     private final AuthenticationService authenticationService;
 
     @PostMapping("/sign-up")

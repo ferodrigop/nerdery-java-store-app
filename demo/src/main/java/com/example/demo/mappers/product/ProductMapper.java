@@ -31,7 +31,7 @@ public interface ProductMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "category", source = "categoryId", qualifiedByName = "idToCategory")
     @Mapping(target = "isEnabled", ignore = true)
     @Mapping(target = "images", ignore = true)
     Product updateProductFromDto(ProductRequestDto productRequestDto, @MappingTarget Product product);

@@ -1,4 +1,4 @@
-package com.example.demo.controllers;
+package com.example.demo.controllers.product;
 
 import com.example.demo.dtos.product.ProductDto;
 import com.example.demo.dtos.product.ProductImageDto;
@@ -43,8 +43,7 @@ public class ProductController {
     ) {
         Pageable pageable = PageBuilder.buildPageRequest(pageNumber, pageSize, sortBy, sortDir);
         return ResponseEntity.ok(
-                productService.getAllProducts(pageable)
-                        .map(productMapper::toDto)
+                productService.getAllProducts(name, categoryName, pageable)
         );
     }
 
@@ -84,7 +83,7 @@ public class ProductController {
 
     @PreAuthorize("hasRole('MANAGER')")
     @DeleteMapping("/{productId}")
-    public ResponseEntity<?> deleteProduct(@PathVariable UUID productId) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable UUID productId) {
         productService.deleteProductById(productId);
         return ResponseEntity.noContent().build();
     }
@@ -98,7 +97,7 @@ public class ProductController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{productId}/likes")
-    public ResponseEntity<?> likeProductById(@PathVariable UUID productId) {
+    public ResponseEntity<Void> likeProductById(@PathVariable UUID productId) {
         productLikeService.likeProduct(productId);
         return ResponseEntity.noContent().build();
     }
@@ -113,9 +112,22 @@ public class ProductController {
         );
     }
 
-    @GetMapping("/{productId}/images/{imageId}")
-    public ResponseEntity<ProductImageDto> getProductImageById(
+    @PreAuthorize("hasRole('MANAGER')")
+    @PostMapping("/{productId}/images")
+    public ResponseEntity<ProductImageDto> addProductImage(
             @PathVariable UUID productId,
+            @RequestPart("image") MultipartFile image
+    ) {
+        System.out.println("landed here");
+        return ResponseEntity.ok(
+                productImageMapper.toDto(
+                        productImageService.addProductImage(productId, image)
+                )
+        );
+    }
+
+    @GetMapping("/images/{imageId}")
+    public ResponseEntity<ProductImageDto> getProductImageById(
             @PathVariable UUID imageId
     ) {
 
@@ -127,22 +139,8 @@ public class ProductController {
     }
 
     @PreAuthorize("hasRole('MANAGER')")
-    @PostMapping("/{productId}/images")
-    public ResponseEntity<ProductImageDto> addProductImage(
-            @PathVariable UUID productId,
-            @RequestPart("image") MultipartFile file
-    ) {
-        return ResponseEntity.ok(
-                productImageMapper.toDto(
-                        productImageService.addProductImage(productId, file)
-                )
-        );
-    }
-
-    @PreAuthorize("hasRole('MANAGER')")
-    @PutMapping("/{productId}/images/{imageId}")
+    @PutMapping("/images/{imageId}")
     public ResponseEntity<ProductImageDto> updateProductImage(
-            @PathVariable UUID productId,
             @PathVariable UUID imageId,
             @RequestPart("image") MultipartFile file
     ) {
@@ -154,9 +152,8 @@ public class ProductController {
     }
 
     @PreAuthorize("hasRole('MANAGER')")
-    @DeleteMapping("/{productId}/images/{imageId}")
-    public ResponseEntity<ProductImageDto> deleteProductImage(
-            @PathVariable UUID productId,
+    @DeleteMapping("/images/{imageId}")
+    public ResponseEntity<Void> deleteProductImage(
             @PathVariable UUID imageId
     ) {
         productImageService.deleteProductImageById(imageId);

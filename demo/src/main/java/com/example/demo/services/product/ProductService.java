@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -24,8 +25,13 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final ProductImageRepository productImageRepository;
 
-    public Page<Product> getAllProducts(Pageable pageable) {
-        return productRepository.findAll(pageable);
+    public Page<ProductDto> getAllProducts(String name, String categoryName, Pageable pageable) {
+        Specification<Product> specification = productSpecification(name, categoryName);
+        return productRepository.findAll(
+                        specification,
+                        pageable
+                )
+                .map(productMapper::toDto);
     }
 
     public Product getProductById(UUID id) {
@@ -64,12 +70,14 @@ public class ProductService {
         return productRepository.existsById(id);
     }
 
-    public Page<ProductDto> searchProduct(String name, Pageable pageable) {
+    private Specification<Product> productSpecification(String name, String categoryName) {
         Specification<Product> specification = Specification.where(null);
-        if (name != null) {
+        if (!Objects.isNull(name)) {
             specification = specification.and(ProductSpecification.hasName(name));
         }
-        return productRepository.findAll(specification, pageable)
-                .map(productMapper::toDto);
+        if (!Objects.isNull(categoryName)) {
+            specification = specification.and(ProductSpecification.hasCategoryName(categoryName));
+        }
+        return specification;
     }
 }

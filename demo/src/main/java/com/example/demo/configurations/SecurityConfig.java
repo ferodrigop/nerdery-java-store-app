@@ -1,8 +1,6 @@
 package com.example.demo.configurations;
 
-import com.example.demo.utils.CustomAuthenticationEntryPoint;
 import com.example.demo.utils.CustomAuthenticationFailureHandler;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
@@ -20,12 +18,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -36,13 +31,7 @@ public class SecurityConfig {
                     authorize.anyRequest().permitAll();
                 })
                 .httpBasic(AbstractHttpConfigurer::disable)
-                .formLogin(formLogin -> {
-                    formLogin.disable();
-                    formLogin.failureHandler(authenticationFailureHandler());
-                })
-                .exceptionHandling(exceptionHandling -> {
-                    exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint);
-                });
+                .formLogin(AbstractHttpConfigurer::disable);
         return http.build();
     }
 

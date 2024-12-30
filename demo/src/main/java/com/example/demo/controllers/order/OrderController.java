@@ -1,4 +1,4 @@
-package com.example.demo.controllers;
+package com.example.demo.controllers.order;
 
 import com.example.demo.dtos.order.OrderDto;
 import org.springframework.data.domain.Sort;

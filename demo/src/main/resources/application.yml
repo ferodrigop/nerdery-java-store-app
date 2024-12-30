@@ -1,6 +1,7 @@
 spring:
   application:
     name: demo
+    base-url: http://localhost:8080
   datasource:
     username: postgres
     password: 123
@@ -15,6 +16,12 @@ spring:
     locations: classpath:db/migration
     schemas: public
     baseline-on-migrate: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+      file-size-threshold: 2KB
 
 security:
   jwt:
@@ -22,8 +29,21 @@ security:
     access-token-expiration-time: 3600000 # 1h in millisecond
     refresh-token-expiration-time: 604800000 # 1h in millisecond
 
-
 api:
   password:
     reset:
-      ttl: 300 # 5 minutes
+      ttl: 600 # 10 minutes
+
+app:
+  sendgrid:
+    api-key: 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
+    from-email: rpindv@gmail.com
+    from-name: Demo Application
+    template:
+      reset-password-email: d-76ff8c00065b4da2b840130ddded184a
+aws:
+  s3:
+    bucket-name: mydemoappbucket
+    region: us-east-2
+    access-key-id: AKIA5CBDRITOTI6WYN5T
+    secret-access-key: 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

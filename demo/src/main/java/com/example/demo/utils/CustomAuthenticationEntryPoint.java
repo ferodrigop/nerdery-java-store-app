@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     private final ObjectMapper objectMapper;
-    private final ExceptionUtils exceptionUtils;
 
     @Override
     public void commence(HttpServletRequest request,
@@ -28,7 +27,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         String error = "Invalid credentials";
         String description = "The provided email or password is incorrect";
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-        ErrorResponseDto errorResponseDto = exceptionUtils.createErrorResponseDto(
+        ErrorResponseDto errorResponseDto = ExceptionUtils.createErrorResponseDto(
                 status,
                 error,
                 description,

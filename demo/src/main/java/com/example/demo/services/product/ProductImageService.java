@@ -4,13 +4,13 @@ import com.example.demo.entities.product.ProductImage;
 import com.example.demo.exceptions.CannotDeleteLastImageException;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.repositories.product.ProductImageRepository;
+import com.example.demo.services.aws.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -18,6 +18,7 @@ import java.util.UUID;
 public class ProductImageService {
     private final ProductImageRepository productImageRepository;
     private final ProductService productService;
+    private final S3Service s3Service;
 
     public List<ProductImage> getAllProductImagesByProductId(UUID productId) {
         if (!productService.existsProductById(productId)) {
@@ -31,13 +32,9 @@ public class ProductImageService {
                 .orElseThrow(() -> new NotFoundException("Product image not found with id: " + productImageId));
     }
 
-    /**
-     * todo:
-     * - add method to upload image and return url
-     */
     public String uploadImage(MultipartFile file) {
-        Random random = new Random();
-        return "this/is/a/new/url/" + UUID.randomUUID() + ".jpg";
+        String fileKey = UUID.randomUUID() + "-" + file.getOriginalFilename();
+        return s3Service.uploadFile(file, fileKey);
     }
 
     @Transactional
@@ -51,9 +48,11 @@ public class ProductImageService {
         return productImageRepository.saveAndFlush(productImage);
     }
 
+    @Transactional
     public ProductImage replaceProductImageById(UUID productImageId, MultipartFile file) {
-        String url = uploadImage(file);
         ProductImage productImage = getProductImageById(productImageId);
+        s3Service.deleteObject(s3Service.extractKeyFromUrl(productImage.getImageUrl()));
+        String url = uploadImage(file);
         productImage.setImageUrl(url);
         return productImageRepository.saveAndFlush(productImage);
     }
@@ -73,6 +72,7 @@ public class ProductImageService {
     @Transactional(rollbackFor = Exception.class)
     public void deleteProductImageById(UUID productImageId) {
         ProductImage productImage = getProductImageById(productImageId);
+        s3Service.deleteObject(s3Service.extractKeyFromUrl(productImage.getImageUrl()));
         if (productImage.getIsMain()) {
             productImage.setIsMain(false);
             productImageRepository.findFirstByProductIdAndIdNotOrderByCreatedAtAsc(productImage.getProduct().getId(), productImageId)

@@ -8,6 +8,7 @@ import com.example.demo.entities.user.User;
 import com.example.demo.exceptions.CurrentPasswordException;
 import com.example.demo.exceptions.NewPasswordMismatchException;
 import com.example.demo.repositories.user.UserRepository;
+import com.example.demo.services.email.EmailDispatcher;
 import com.example.demo.utils.IAuthenticationFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +25,7 @@ public class PasswordService {
     private final IAuthenticationFacade authenticationFacade;
     private final UserRepository userRepository;
     private final PasswordResetService passwordResetService;
+    private final EmailDispatcher emailDispatcher;
 
     @Transactional
     public void changePassword(ChangePasswordDto changePasswordDto) {
@@ -45,7 +47,12 @@ public class PasswordService {
         User user = userRepository.findByEmail(forgotPasswordDto.email())
                 .orElse(null);
         if (Objects.nonNull(user)) {
-            PasswordReset passwordReset = passwordResetService.createPasswordReset(user);
+            try {
+                PasswordReset passwordReset = passwordResetService.createPasswordReset(user);
+                emailDispatcher.dispatchResetPasswordEmail(user.getEmail(), passwordReset.getId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         // todo: sent email with password reset uuid
     }
@@ -55,12 +62,11 @@ public class PasswordService {
         if (!resetPasswordDto.newPassword().equals(resetPasswordDto.newPasswordConfirmation())) {
             throw new NewPasswordMismatchException("The new password and its confirmation do not match");
         }
-        User user = (User) authenticationFacade.getAuthentication().getPrincipal();
-        passwordResetService.findPasswordResetByIdAndUserAndExpiresAtAfter(
+        PasswordReset passwordReset = passwordResetService.findPasswordResetByIdAndExpiresAtAfter(
                 resetPasswordDto.token(),
-                user,
                 Instant.now()
         );
+        User user = passwordReset.getUser();
         if (!passwordEncoder.matches(resetPasswordDto.newPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(resetPasswordDto.newPassword()));
             userRepository.save(user);

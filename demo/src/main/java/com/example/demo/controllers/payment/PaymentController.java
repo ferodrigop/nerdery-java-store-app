@@ -1,4 +1,4 @@
-package com.example.demo.controllers;
+package com.example.demo.controllers.payment;
 
 import com.example.demo.dtos.payment.PaymentIntentRequestDto;
 import com.example.demo.dtos.payment.PaymentIntentResponseDto;

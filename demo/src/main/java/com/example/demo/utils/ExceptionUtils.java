@@ -2,13 +2,11 @@ package com.example.demo.utils;
 
 import com.example.demo.dtos.exception.ErrorResponseDto;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-@Component
 public class ExceptionUtils {
-    public ErrorResponseDto createErrorResponseDto(
+    public static ErrorResponseDto createErrorResponseDto(
             HttpStatus status,
             String error,
             String message,
@@ -23,7 +21,7 @@ public class ExceptionUtils {
                 .build();
     }
 
-    public ErrorResponseDto createErrorResponseDto(
+    public static ErrorResponseDto createErrorResponseDto(
             HttpStatus status,
             String error,
             String message,

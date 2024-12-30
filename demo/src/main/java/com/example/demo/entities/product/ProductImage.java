@@ -21,7 +21,7 @@ public class ProductImage {
     @Column(updatable = false, unique = true)
     private UUID id;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url", nullable = false, unique = true)
     private String imageUrl;
 
     @Column(name = "is_main", nullable = false)

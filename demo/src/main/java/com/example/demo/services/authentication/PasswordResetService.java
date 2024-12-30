@@ -28,8 +28,8 @@ public class PasswordResetService {
         return passwordResetRepository.saveAndFlush(passwordReset);
     }
 
-    public PasswordReset findPasswordResetByIdAndUserAndExpiresAtAfter(UUID id, User user, Instant date) {
-        return passwordResetRepository.findByIdAndUserAndExpiresAtAfter(id, user, date)
+    public PasswordReset findPasswordResetByIdAndExpiresAtAfter(UUID id, Instant date) {
+        return passwordResetRepository.findByIdAndExpiresAtAfter(id, date)
                 .orElseThrow(() -> new NotFoundException("Invalid or expired reset token"));
     }
 

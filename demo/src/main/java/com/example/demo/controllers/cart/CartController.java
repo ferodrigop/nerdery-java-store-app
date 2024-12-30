@@ -1,4 +1,4 @@
-package com.example.demo.controllers;
+package com.example.demo.controllers.cart;
 
 import com.example.demo.dtos.cart.AddToCartRequestDto;
 import com.example.demo.dtos.cart.CartDto;

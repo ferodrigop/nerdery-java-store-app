@@ -18,6 +18,6 @@ public class Category {
     @Column(updatable = false, unique = true)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 }
