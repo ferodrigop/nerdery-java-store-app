@@ -30,7 +30,7 @@ public class RefreshTokenService {
 
     public RefreshToken findRefreshTokenByIdAndExpiresAtAfter(UUID refreshTokenId, Instant date) {
         return refreshTokenRepository.findByIdAndExpiresAtAfter(refreshTokenId, date)
-                .orElseThrow(() -> new NotFoundException("Refresh token not found with id " + refreshTokenId));
+                .orElseThrow(() -> new NotFoundException("Invalid or expired refresh token id"));
     }
 
     @Transactional

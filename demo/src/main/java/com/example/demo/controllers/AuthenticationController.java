@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dtos.auth.*;
+import com.example.demo.dtos.general.ResponseMessageDto;
 import com.example.demo.entities.order.RoleName;
 import com.example.demo.services.authentication.AuthenticationService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class AuthenticationController {
 
     @PostMapping("/sign-in")
     public ResponseEntity<SignInResponseDto> signIn(@RequestBody SignInRequestDto signInRequestDto) {
-        SignInResponseDto signInResponseDto = authenticationService.login(signInRequestDto);
+        SignInResponseDto signInResponseDto = authenticationService.signIn(signInRequestDto);
         return ResponseEntity.ok(signInResponseDto);
     }
 
@@ -50,13 +51,33 @@ public class AuthenticationController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestBody ForgotPasswordDto forgotPasswordDto) {
-        return ResponseEntity.ok("Email sent successfully");
+    public ResponseEntity<ResponseMessageDto> forgotPassword(@RequestBody ForgotPasswordDto forgotPasswordDto) {
+        authenticationService.initiatePasswordReset(forgotPasswordDto);
+        return ResponseEntity.ok(
+                ResponseMessageDto.builder()
+                        .message("If the email is associated with an account, a reset link has been sent")
+                        .build()
+        );
     }
 
     @PostMapping("/reset-password")
+    public ResponseEntity<ResponseMessageDto> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
+        authenticationService.resetPassword(resetPasswordDto);
+        return ResponseEntity.ok(
+                ResponseMessageDto.builder()
+                        .message("Password reset successfully. You may now log in")
+                        .build()
+        );
+    }
+
+    @PostMapping("/change-password")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto) {
-        return ResponseEntity.ok("Password successfully reset");
+    public ResponseEntity<ResponseMessageDto> changePassword(@RequestBody ChangePasswordDto changePasswordDto) {
+        authenticationService.changePassword(changePasswordDto);
+        return ResponseEntity.ok(
+                ResponseMessageDto.builder()
+                        .message("Password successfully changed")
+                        .build()
+        );
     }
 }

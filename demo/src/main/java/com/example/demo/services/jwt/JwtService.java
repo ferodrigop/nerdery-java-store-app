@@ -33,10 +33,6 @@ public class JwtService {
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
     }
 
-    public long getExpirationTime() {
-        return accessTokenExpirationMs;
-    }
-
     private String buildAccessToken(
             String username,
             long expiration

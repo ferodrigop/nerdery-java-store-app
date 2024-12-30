@@ -1,8 +1,6 @@
 package com.example.demo.services.authentication;
 
-import com.example.demo.dtos.auth.SignInRequestDto;
-import com.example.demo.dtos.auth.SignInResponseDto;
-import com.example.demo.dtos.auth.SignUpRequestDto;
+import com.example.demo.dtos.auth.*;
 import com.example.demo.entities.order.RoleName;
 import com.example.demo.entities.refresh_token.RefreshToken;
 import com.example.demo.entities.user.User;
@@ -30,9 +28,10 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
+    private final PasswordService passwordService;
 
     @Transactional
-    public SignInResponseDto login(SignInRequestDto signInRequestDto) {
+    public SignInResponseDto signIn(SignInRequestDto signInRequestDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         signInRequestDto.email(),
@@ -69,5 +68,17 @@ public class AuthenticationService {
                 .accessToken(newAccessToken)
                 .refreshToken(refreshToken.getId())
                 .build();
+    }
+
+    public void changePassword(ChangePasswordDto changePasswordDto) {
+        passwordService.changePassword(changePasswordDto);
+    }
+
+    public void initiatePasswordReset(ForgotPasswordDto forgotPasswordDto) {
+        passwordService.initiatePasswordReset(forgotPasswordDto);
+    }
+
+    public void resetPassword(ResetPasswordDto resetPasswordDto) {
+        passwordService.resetPassword(resetPasswordDto);
     }
 }

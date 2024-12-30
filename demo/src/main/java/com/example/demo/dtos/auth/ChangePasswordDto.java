@@ -1,9 +1,7 @@
 package com.example.demo.dtos.auth;
 
-import java.util.UUID;
-
-public record ResetPasswordDto(
-        UUID token,
+public record ChangePasswordDto(
+        String currentPassword,
         String newPassword,
         String newPasswordConfirmation
 ) {
