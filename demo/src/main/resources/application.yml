@@ -47,3 +47,9 @@ aws:
     region: us-east-2
     access-key-id: AKIA5CBDRITOTI6WYN5T
     secret-access-key: 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
+
+stripe:
+  api:
+    publishable-key: pk_test_51QboCrCt6nS5XeMXH7TadPmXGH3k3o2qnMnpRp8ykyCY3wUZblEE28SytypJ1masGUzfIzDH8c9CyeJflNIb1CvH00wVcJeU0y
+    secret-key: sk_test_51QboCrCt6nS5XeMXPxHnB2Ferih8I5Pvekt4NZMzC867GmQYwHb0iaCUBSY83IzHOBq7TrgRL1H4RBi8NTXgo18d00h49u6NLR
+    webhook-secret: whsec_a7866c68c8974729a47d1d20e602a7a8ad55123d39db11cb3023e7902bae9ee6

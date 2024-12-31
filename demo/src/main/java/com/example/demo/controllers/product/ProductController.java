@@ -118,7 +118,6 @@ public class ProductController {
             @PathVariable UUID productId,
             @RequestPart("image") MultipartFile image
     ) {
-        System.out.println("landed here");
         return ResponseEntity.ok(
                 productImageMapper.toDto(
                         productImageService.addProductImage(productId, image)
