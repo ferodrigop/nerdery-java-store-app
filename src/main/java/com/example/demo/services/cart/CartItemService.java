@@ -1,6 +1,7 @@
 package com.example.demo.services.cart;
 
 import com.example.demo.entities.cart.CartItem;
+import com.example.demo.entities.product.Product;
 import com.example.demo.exceptions.NotFoundException;
 import com.example.demo.repositories.cart.CartItemRepository;
 import com.example.demo.services.product.ProductService;
@@ -19,7 +20,9 @@ public class CartItemService {
 
     @Transactional(rollbackFor = Exception.class)
     public CartItem addItemToCart(UUID cartId, UUID productId, int quantity) {
-        return cartItemRepository.findByCartIdAndProductId(cartId, productId)
+        Product product = productService.getReferenceById(productId);
+
+        cartItemRepository.findByCartIdAndProductId(cartId, productId)
                 .orElse(
                         cartItemRepository.saveAndFlush(
                                 CartItem.builder()
@@ -29,6 +32,8 @@ public class CartItemService {
                                         .build()
                         )
                 );
+
+        return
     }
 
     @Transactional(rollbackFor = Exception.class)
