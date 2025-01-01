@@ -4,7 +4,7 @@ import com.example.demo.entities.payment.Payment;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 /**
@@ -17,6 +17,6 @@ public record PaymentDto(
         String currency,
         String status,
         UUID orderId,
-        Instant createdAt
+        OffsetDateTime createdAt
 ) implements Serializable {
 }

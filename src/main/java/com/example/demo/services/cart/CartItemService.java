@@ -22,7 +22,7 @@ public class CartItemService {
     public CartItem addItemToCart(UUID cartId, UUID productId, int quantity) {
         Product product = productService.getReferenceById(productId);
 
-        cartItemRepository.findByCartIdAndProductId(cartId, productId)
+        CartItem cartItem = cartItemRepository.findByCartIdAndProductId(cartId, productId)
                 .orElse(
                         cartItemRepository.saveAndFlush(
                                 CartItem.builder()
@@ -33,7 +33,7 @@ public class CartItemService {
                         )
                 );
 
-        return
+        return cartItem;
     }
 
     @Transactional(rollbackFor = Exception.class)

@@ -13,7 +13,7 @@ import java.util.UUID;
  */
 @Builder
 public record OrderDto(
-        UUID orderId,
+        UUID id,
         UUID userId,
         BigDecimal total,
         String status,

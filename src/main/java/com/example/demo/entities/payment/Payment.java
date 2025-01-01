@@ -6,7 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -40,5 +40,5 @@ public class Payment {
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
-    private Instant createdAt;
+    private OffsetDateTime createdAt;
 }

@@ -25,6 +25,8 @@ public class JwtService {
     }
 
     public String extractUsername(String token) {
+        String username = null;
+        username = extractClaim(token, Claims::getSubject);
         return extractClaim(token, Claims::getSubject);
     }
 

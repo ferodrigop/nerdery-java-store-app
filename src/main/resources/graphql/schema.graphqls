@@ -1,6 +1,12 @@
+directive @specifiedBy(url: String!) on SCALAR
+
+scalar DateTime
+scalar BigDecimal
+
 type Query {
-    product(id: ID!): Product
-    products(categoryId: ID, isEnabled: Boolean, name: String): [Product!]!
+    order(id: ID!): Order
+    userOrders(userId: ID!, first: Int, last: Int, before: String, after: String): OrderConnection
+    cart: Cart!
 }
 
 type Role {
@@ -22,12 +28,11 @@ type Product {
     id: ID!
     name: String!
     description: String!
-    price: Float!
+    price: BigDecimal!
     stock: Int!
     isEnabled: Boolean!
     category: Category!
     images: [ProductImage!]
-    likes: [ProductLike!]
 }
 
 type Category {
@@ -42,32 +47,26 @@ type ProductImage {
     product: Product!
 }
 
-type ProductLike {
-    id: ID!
-    user: User!
-    product: Product!
-}
-
 type Order {
     id: ID!
-    total: Float!
+    total: BigDecimal!
     user: User!
     status: String!
-    items: [OrderItem!]!
+    items: [OrderItem]!
+    createdAt: DateTime
 }
 
 type OrderItem {
     id: ID!
     quantity: Int!
-    unitPrice: Float!
-    order: Order!
+    unitPrice: BigDecimal!
     product: Product!
 }
 
 type Cart {
     id: ID!
     user: User!
-    items: [CartItem!]
+    items(first: Int,last: Int,before: String,after: String): [CartItem]!
 }
 
 type CartItem {
@@ -79,15 +78,27 @@ type CartItem {
 
 type Payment {
     id: ID!
-    amount: Float!
+    amount: BigDecimal!
     currency: String!
     status: String!
     stripePaymentIntentId: String
     order: Order!
 }
 
-type Notification {
-    id: ID!
-    message: String!
-    recipient: User!
+type OrderConnection {
+    edges: [OrderEdge]
+    items: [OrderItem]!
+    pageInfo: PageInfo!
+}
+
+type OrderEdge {
+    cursor: String!
+    node: Order
+}
+
+type PageInfo {
+    startCursor: String
+    endCursor: String
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
 }

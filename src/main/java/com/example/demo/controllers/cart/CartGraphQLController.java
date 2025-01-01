@@ -1,62 +1,71 @@
 package com.example.demo.controllers.cart;
 
-import com.example.demo.entities.order.Order;
-import org.springframework.data.domain.Limit;
-import org.springframework.data.domain.ScrollPosition;
-import org.springframework.data.domain.Window;
-import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.query.ScrollSubrange;
+import com.example.demo.dtos.cart.AddToCartRequestDto;
+import com.example.demo.dtos.cart.CartDto;
+import com.example.demo.dtos.cart.CartItemDto;
+import com.example.demo.dtos.cart.UpdateCartItemQuantityRequestDto;
+import com.example.demo.entities.cart.Cart;
+import com.example.demo.mappers.cart.CartMapper;
+import com.example.demo.services.cart.CartItemService;
+import com.example.demo.services.cart.CartService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Function;
+import java.util.UUID;
 
+@RequiredArgsConstructor
 @Controller
 public class CartGraphQLController {
-    @QueryMapping
-    public Window<Order> customerOrders(
-            @Argument("clientId") long clientId, ScrollSubrange subrange) {
+    private final CartService cartService;
+    private final CartItemService cartItemService;
+    private final CartMapper cartMapper;
 
-        ScrollPosition scrollPosition = subrange.position().orElse(ScrollPosition.offset());
-        Limit limit = Limit.of(subrange.count().orElse(10));
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping
+    public ResponseEntity<CartDto> getCart() {
+        return ResponseEntity.ok(
+                cartMapper.toDto(cartService.getOrCreateCartForUser())
+        );
+    }
 
-        return new Window<Order>() {
-            @Override
-            public int size() {
-                return 0;
-            }
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping
+    public ResponseEntity<CartItemDto> addItemToCart(@RequestBody AddToCartRequestDto addToCartRequestDto) {
+        Cart cart = cartService.getOrCreateCartForUser();
+        return ResponseEntity.ok(
+                cartMapper.toDto(
+                        cartItemService.addItemToCart(
+                                cart.getId(),
+                                addToCartRequestDto.productId(),
+                                addToCartRequestDto.quantity()
+                        )
+                )
+        );
+    }
 
-            @Override
-            public boolean isEmpty() {
-                return false;
-            }
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/{cartItemId}")
+    public ResponseEntity<CartItemDto> updateCartItemQuantity(
+            @PathVariable UUID cartItemId,
+            @RequestBody UpdateCartItemQuantityRequestDto updateCartItemQuantityRequestDto
+    ) {
+        return ResponseEntity.ok(
+                cartMapper.toDto(
+                        cartItemService.updateCartItemQuantityById(
+                                cartItemId,
+                                updateCartItemQuantityRequestDto.newQuantity()
+                        )
+                )
+        );
+    }
 
-            @Override
-            public List<Order> getContent() {
-                return List.of();
-            }
-
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
-
-            @Override
-            public ScrollPosition positionAt(int index) {
-                return null;
-            }
-
-            @Override
-            public <U> Window<U> map(Function<? super Order, ? extends U> converter) {
-                return null;
-            }
-
-            @Override
-            public Iterator<Order> iterator() {
-                return null;
-            }
-        };
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{cartItemId}")
+    public ResponseEntity<?> removeFromCart(@PathVariable UUID cartItemId) {
+        cartItemService.removeCartItemById(cartItemId);
+        return ResponseEntity.notFound().build();
     }
 }

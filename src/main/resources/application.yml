@@ -31,10 +31,13 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
       file-size-threshold: 2KB
+  graphql:
+    graphiql:
+      enabled: true
 
 security:
   jwt:
-    secret-key: ${JWT_SECRET_KEY:1044be16ae2969165c02b9573c994a50f0221995da74a708ef31a7a24b098ba2}
+    secret-key: ${JWT_SECRET_KEY}
     access-token-expiration-time: 3600000 # 1h in millisecond
     refresh-token-expiration-time: 604800000 # 1h in millisecond
 
@@ -45,20 +48,20 @@ api:
 
 app:
   sendgrid:
-    api-key: ${SPRING_SENDGRID_API_KEY:mydemoappbucket}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
-    from-email: ${SPRING_SENDGRID_FROM_EMAIL:rpindv@gmail.com}
-    from-name: ${SPRING_SENDGRID_FROM_NAME:Demo Application}
+    api-key: ${SPRING_SENDGRID_API_KEY}
+    from-email: ${SPRING_SENDGRID_FROM_EMAIL}
+    from-name: ${SPRING_SENDGRID_FROM_NAME}
     template:
-      reset-password-email: ${SPRING_SENDGRID_TEMPLATE_RESET_PASSWORD_EMAIL:d-76ff8c00065b4da2b840130ddded184a}
+      reset-password-email: ${SPRING_SENDGRID_TEMPLATE_RESET_PASSWORD_EMAIL}
 aws:
   s3:
-    bucket-name: ${SPRING_AWS_S3_BUCKET_NAME:mydemoappbucket}
+    bucket-name: ${SPRING_AWS_S3_BUCKET_NAME}
     region: ${SPRING_AWS_S3_REGION:us-east-2}
-    access-key-id: ${SPRING_AWS_S3_ACCESS_KEY_ID:AKIA5CBDRITOTI6WYN5T}
-    secret-access-key: ${SPRING_AWS_S3_SECRET_ACCESS_KEY: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}
+    access-key-id: ${SPRING_AWS_S3_ACCESS_KEY_ID}
+    secret-access-key: ${SPRING_AWS_S3_SECRET_ACCESS_KEY}
 
 stripe:
   api:
-    publishable-key: ${STRIPE_API_PUBLISHABLE_KEY:pk_test_51QboCrCt6nS5XeMXH7TadPmXGH3k3o2qnMnpRp8ykyCY3wUZblEE28SytypJ1masGUzfIzDH8c9CyeJflNIb1CvH00wVcJeU0y}
-    secret-key: ${STRIPE_API_SECRET_KEY:sk_test_51QboCrCt6nS5XeMXPxHnB2Ferih8I5Pvekt4NZMzC867GmQYwHb0iaCUBSY83IzHOBq7TrgRL1H4RBi8NTXgo18d00h49u6NLR}
-    webhook-secret: ${STRIPE_API_WEBHOOK_SECRET:whsec_a7866c68c8974729a47d1d20e602a7a8ad55123d39db11cb3023e7902bae9ee6}
+    publishable-key: ${STRIPE_API_PUBLISHABLE_KEY}
+    secret-key: ${STRIPE_API_SECRET_KEY}
+    webhook-secret: ${STRIPE_API_WEBHOOK_SECRET}
