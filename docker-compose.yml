@@ -40,16 +40,36 @@ services:
       POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME}
       POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
 
-  mysql:
-    image: mysql
-    container_name: mysql
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    depends_on:
+      - sonar_db
     ports:
-      - "3306:3306"
+      - "9000:9000"
     environment:
-      MYSQL_ROOT_PASSWORD: 123
-      MYSQL_DATABASE: tempdb
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+      SONAR_JDBC_URL: jdbc:postgresql://sonar_db/${SONARQUBE_DB_NAME}
+      SONAR_JDBC_USERNAME: ${SONARQUBE_DB_USER}
+      SONAR_JDBC_PASSWORD: ${SONARQUBE_DB_PASSWORD}
     volumes:
-      - mysql_data:/var/lib/mysql
+      - sonarqube_conf:/opt/sonarqube/conf
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_temp:/opt/sonarqube/temp
+
+  sonar_db:
+    image: postgres
+    container_name: sonar_db
+    ports:
+      - "5433:5433"
+    environment:
+      POSTGRES_USER: ${SONARQUBE_DB_USER}
+      POSTGRES_PASSWORD: ${SONARQUBE_DB_PASSWORD}
+      POSTGRES_DB: ${SONARQUBE_DB_NAME}
+    volumes:
+      - sonar_db_data:/var/lib/postgresql/data
   
   redis:
     image: redis
@@ -62,7 +82,13 @@ services:
 volumes:
   postgres_data:
     name: postgres_data
-  mysql_data:
-    name: mysql_data
   redis_data:
     name: redis_data
+  sonar_db_data:
+    name: sonar_db_data
+  sonarqube_conf:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  sonarqube_temp:
+  sonar_db:
