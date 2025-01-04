@@ -4,12 +4,14 @@ import com.example.demo.repositories.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 
+@Profile("prod")
 @RequiredArgsConstructor
 @Component
 public class DataInitializer {

@@ -3,7 +3,6 @@ package com.example.demo.configurations;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.objects.Email;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,6 @@ public class SendGridConfiguration {
     private final SendGridConfigurationProperties sendGridConfigurationProperties;
 
     @Bean
-    @ConditionalOnMissingBean
     public SendGrid sendGrid() {
         String apiKey = sendGridConfigurationProperties.apiKey();
         return new SendGrid(apiKey);

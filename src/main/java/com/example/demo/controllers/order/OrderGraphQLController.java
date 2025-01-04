@@ -20,7 +20,6 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.graphql.data.query.ScrollSubrange;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
@@ -38,18 +37,20 @@ public class OrderGraphQLController {
     private final ProductService productService;
     private final IAuthenticationFacade authenticationFacade;
 
-    @Secured("ROLE_USER")
+    //@Secured("ROLE_USER")
     @QueryMapping
     public Order order(@Argument final UUID id) {
         return orderService.findOrderById(id);
     }
 
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("isAuthenticated()")
     @QueryMapping
     public Window<Order> userOrders(
             @Argument final UUID userId,
             ScrollSubrange subrange
     ) {
+        User user = (User) authenticationFacade.getAuthentication().getPrincipal();
+        System.out.println(user.getId());
         ScrollPosition scrollPosition = subrange.position().orElse(ScrollPosition.offset());
         Limit limit = Limit.of(subrange.count().orElse(10));
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");

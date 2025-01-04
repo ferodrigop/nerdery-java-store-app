@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -22,13 +23,10 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<SignUpResponseDto> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
+    public ResponseEntity<Void> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
         UUID newUserId = authenticationService.signUp(signUpRequestDto, RoleName.ROLE_USER);
-        return ResponseEntity.ok(
-                SignUpResponseDto.builder()
-                        .userId(newUserId)
-                        .build()
-        );
+        URI location = URI.create(String.format("/api/v1/users/%s", newUserId));
+        return ResponseEntity.created(location).build();
     }
 
     @PostMapping("/sign-in")

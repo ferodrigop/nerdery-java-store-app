@@ -66,7 +66,7 @@ public class CartController {
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/{cartItemId}")
-    public ResponseEntity<?> removeFromCart(@PathVariable UUID cartItemId) {
+    public ResponseEntity<Void> removeFromCart(@PathVariable UUID cartItemId) {
         cartItemService.removeCartItemById(cartItemId);
         return ResponseEntity.notFound().build();
     }

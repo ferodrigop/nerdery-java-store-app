@@ -39,10 +39,10 @@ public class SecurityConfig {
                             "/graphiql/**",
                             "/swagger-ui/**",
                             "/v3/api-docs/**",
-                            "/graphql",
                             "/api/v1/authentication",
                             "/api/v1/authentication/**"
                     ).permitAll();
+                    authorize.requestMatchers("/graphql").authenticated();
                     authorize.requestMatchers(HttpMethod.GET, "/api/v1/products").permitAll();
                     authorize.requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll();
                     authorize.requestMatchers(HttpMethod.GET, "/api/v1/products/{productId:\\d+}").permitAll();
